@@ -1,14 +1,28 @@
 // To parse this JSON data, do
 //
-//     final newpaper = newpaperFromJson(jsonString);
+//     final newsappApImodel = newsappApImodelFromJson(jsonString);
 
 import 'dart:convert';
 
-Newpaper newpaperFromJson(String str) => Newpaper.fromJson(json.decode(str));
+NewsappApImodel newsappApImodelFromJson(String str) => NewsappApImodel.fromJson(json.decode(str));
 
-class Newpaper {
+
+class NewsappApImodel {
+    List<Article> articles;
+
+    NewsappApImodel({
+        required this.articles,
+    });
+
+    factory NewsappApImodel.fromJson(Map<String, dynamic> json) => NewsappApImodel(
+        articles: List<Article>.from(json["articles"].map((x) => Article.fromJson(x))),
+    );
+
+}
+
+class Article {
     Source source;
-    String author;
+    dynamic author;
     String title;
     String description;
     String url;
@@ -16,7 +30,7 @@ class Newpaper {
     DateTime publishedAt;
     String content;
 
-    Newpaper({
+    Article({
         required this.source,
         required this.author,
         required this.title,
@@ -27,7 +41,7 @@ class Newpaper {
         required this.content,
     });
 
-    factory Newpaper.fromJson(Map<String, dynamic> json) => Newpaper(
+    factory Article.fromJson(Map<String, dynamic> json) => Article(
         source: Source.fromJson(json["source"]),
         author: json["author"],
         title: json["title"],
@@ -40,7 +54,7 @@ class Newpaper {
 }
 
 class Source {
-    String id;
+    dynamic id;
     String name;
 
     Source({

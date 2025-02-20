@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:newsapp/data_model.dart';
 
 class NewsPage extends StatefulWidget {
-  final Newpaper newpaper;
-  const NewsPage({super.key,required this.newpaper});
+  final String image;
+  final String title;
+  final String description;
+  final String content;
+  final String name;
+  const NewsPage({super.key,required this.image,required this.title,required this.description,required this.content,required this.name});
 
   @override
   State<NewsPage> createState() => _NewsPageState();
@@ -25,7 +28,7 @@ class _NewsPageState extends State<NewsPage> {
                 height: 400, // Adjust height as needed
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage("assets/images/photo-1533450718592-29d45635f0a9.jpeg"),
+                    image: NetworkImage(widget.image),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -38,11 +41,15 @@ class _NewsPageState extends State<NewsPage> {
                       color: const Color.fromARGB(52, 0, 0, 0), // Semi-transparent black
                       shape: BoxShape.circle, // Makes it circular
                     ),
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.white,
+                    child: Center(
+                      child: IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: Icon(
+                          Icons.arrow_back_ios,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                 )
@@ -75,15 +82,14 @@ class _NewsPageState extends State<NewsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("title",style: TextStyle(fontSize: 25,color: Colors.black),),
+                  Row(
+                    children: [
+                      Text("${widget.name}",style: TextStyle(fontSize: 25,color: Colors.black),),
+                      Icon(Icons.verified_rounded,color: Colors.blue,)
+                    ],
+                  ),
                   SizedBox(height: 20,),
-                  Text('''The quiet hum of the city at dawn was interrupted by the distant sound of waves 
-                  crashing against the shore. As the sun slowly rose, casting a golden hue over the skyline,
-                   Amelia sipped her coffee, lost in thought. The world around her seemed to pause for a moment, 
-                   allowing her to soak in the serenity before the inevitable chaos of the day began. Birds 
-                   fluttered between rooftops, and the streets, still damp from last night’s rain, reflected the 
-                   soft glow of streetlights. It was in these fleeting moments of stillness that she found clarity, 
-                   a brief escape from the relentless pace of life.''',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.justify,overflow: TextOverflow.ellipsis,maxLines: 20,)
+                  Text('''${widget.content}''',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.justify,overflow: TextOverflow.ellipsis,maxLines: 20,)
                 ],
               )
             ),
