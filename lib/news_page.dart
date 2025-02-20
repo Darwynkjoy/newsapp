@@ -6,13 +6,26 @@ class NewsPage extends StatefulWidget {
   final String description;
   final String content;
   final String name;
-  const NewsPage({super.key,required this.image,required this.title,required this.description,required this.content,required this.name});
+  final DateTime time;
+  final dynamic author;
+  const NewsPage({super.key,required this.image,required this.title,required this.description,required this.content,required this.name,required this.time,required this.author});
 
   @override
   State<NewsPage> createState() => _NewsPageState();
 }
 
 class _NewsPageState extends State<NewsPage> {
+
+String timeAgo() {
+    final duration = DateTime.now().difference(widget.time);
+    if (duration.inHours >= 1) {
+      return "${duration.inHours} hours ago";
+    } else {
+      return "${duration.inMinutes} minutes ago";
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,14 +38,56 @@ class _NewsPageState extends State<NewsPage> {
             child: Stack(
               children:[ 
               Container(
-                height: 400, // Adjust height as needed
+                height: 380, 
                 decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(widget.image),
-                    fit: BoxFit.cover,
-                  ),
+                  color: Colors.grey,
+                ),
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: FadeInImage.assetNetwork(
+                        placeholder: 'assets/images/kOnzy.gif',
+                        image: widget.image.isNotEmpty ? widget.image : '',
+                        fit: BoxFit.cover,
+                        imageErrorBuilder: (context, error, stackTrace) {
+                          return Icon(Icons.broken_image,color: Colors.white,size: 50,);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Spacer(),
+                          Text(
+                            "${widget.title}",
+                            style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              backgroundColor: const Color.fromARGB(56, 0, 0, 0),
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          ),
+                          Text(
+                            timeAgo(),
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              backgroundColor: const Color.fromARGB(56, 0, 0, 0),
+                            ),
+                          ),
+                          SizedBox(height: 30),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
+              
               Positioned(
                 top: 10,
                 left: 10,
@@ -41,12 +96,12 @@ class _NewsPageState extends State<NewsPage> {
                       color: const Color.fromARGB(52, 0, 0, 0), // Semi-transparent black
                       shape: BoxShape.circle, // Makes it circular
                     ),
-                    child: Center(
-                      child: IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: Icon(
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Center(
+                        child: Icon(
                           Icons.arrow_back_ios,
                           color: Colors.white,
                         ),
@@ -59,7 +114,7 @@ class _NewsPageState extends State<NewsPage> {
           ),
 
           Positioned(
-            top: 320,
+            top: 360,
             left: 0,
             right: 0,
             bottom: 0, 
@@ -75,7 +130,7 @@ class _NewsPageState extends State<NewsPage> {
                   BoxShadow(
                     color: Colors.black26,
                     blurRadius: 10,
-                    spreadRadius: 2,
+                    spreadRadius: 10,
                   ),
                 ],
               ),
@@ -89,7 +144,15 @@ class _NewsPageState extends State<NewsPage> {
                     ],
                   ),
                   SizedBox(height: 20,),
-                  Text('''${widget.content}''',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.justify,overflow: TextOverflow.ellipsis,maxLines: 20,)
+                  Text('''${widget.content}''',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.justify),
+                  Text('''${widget.description}''',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.justify,maxLines: 10,),
+                  Spacer(),
+                  Row(
+                    children: [
+                      Spacer(),
+                      Text("-${widget.author}",style: TextStyle(fontSize: 15,color: Colors.black,fontWeight: FontWeight.bold),textAlign: TextAlign.justify),
+                    ],
+                  )
                 ],
               )
             ),

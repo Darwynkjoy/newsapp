@@ -71,7 +71,7 @@ class _homepageState extends State<Homepage>{
               future: futureData,
             builder: (context,snaphot){
               if(snaphot.connectionState == ConnectionState.waiting){
-                return Center(child: CircularProgressIndicator());
+                return Expanded(child: Center(child: CircularProgressIndicator()));
               }
               else if(snaphot.hasError){
                 return Center(child: Text("error:${snaphot.error}"));
@@ -84,7 +84,7 @@ class _homepageState extends State<Homepage>{
                   final article=articlesData[index];
                   return GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>NewsPage(image: article.urlToImage, title: article.title, description: article.description,content: article.content,name: article.source.name,)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>NewsPage(image: article.urlToImage, title: article.title, description: article.description,content: article.content,name: article.source.name,time: article.publishedAt,author: article.author,)));
                     },
                     child: Container(
                       padding: EdgeInsets.all(10),
@@ -92,11 +92,25 @@ class _homepageState extends State<Homepage>{
                       width: double.infinity,
                       child: Row(
                         children: [
-                          Container(
-                            height: 100,
-                            width: 110,
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),image: DecorationImage(image: NetworkImage("${article.urlToImage}"),fit: BoxFit.cover))
-                          ),
+                          ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: FadeInImage.assetNetwork(
+                                    placeholder: 'assets/images/kOnzy.gif',
+                                    image: article.urlToImage ?? '',
+                                    fit: BoxFit.cover,
+                                    width: 110,
+                                    height: 100,
+                                    placeholderFit: BoxFit.contain,
+                                    imageErrorBuilder: (context,Error, stackTrace) {
+                                      return Container(
+                                        width: 110,
+                                        height: 100,
+                                        color: Colors.grey.shade300,
+                                        child: Icon(Icons.broken_image, size: 40, color: Colors.grey),
+                                      );
+                                    },
+                                  ),
+                                ),
                           SizedBox(width: 10,),
                           Container(
                             width: 237,
