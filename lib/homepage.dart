@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:newsapp/data_model.dart';
+import 'package:newsapp/data.dart';
+import 'package:newsapp/discover_page.dart';
 import 'package:newsapp/news_page.dart';
 
 class Homepage extends StatefulWidget{
@@ -9,7 +10,21 @@ class Homepage extends StatefulWidget{
   State<Homepage> createState()=> _homepageState();
 }
 class _homepageState extends State<Homepage>{
-  late Future <NewsappApImodel?> futureData;
+
+  final List<Widget> _pages = [
+    Homepage(),
+    DiscoverPage(),
+  ];
+  int _selectedIndex = 0;
+
+  // Function to update the selected index
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  late Future <Newsappapimodel?> futureData;
   @override
 
   void initState(){
@@ -17,12 +32,12 @@ class _homepageState extends State<Homepage>{
     futureData= getData();
   }
 
-  Future<NewsappApImodel?> getData() async{
+  Future<Newsappapimodel?> getData() async{
     try{
-      String url="https://newsapi.org/v2/everything?q=apple&from=2025-02-18&to=2025-02-18&sortBy=popularity&apiKey=82e09c57322740199b14c3f78f979326";
+      String url="https://newsapi.org/v2/everything?q=apple&from=2025-02-20&to=2025-02-20&sortBy=popularity&apiKey=82e09c57322740199b14c3f78f979326";
       http.Response res=await http.get(Uri.parse(url));
       if(res.statusCode == 200){
-        return NewsappApImodel.fromJson(json.decode(res.body));
+        return Newsappapimodel.fromJson(json.decode(res.body));
       }
       else{
         throw Exception("failed to load data");
@@ -152,9 +167,33 @@ class _homepageState extends State<Homepage>{
             }),
           ],
         ),
-      )
+      ),
       
-      
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: Colors.blue, // Active icon color
+        unselectedItemColor: Colors.grey, // Inactive icon color
+        type: BottomNavigationBarType.fixed, // Keeps all labels visible
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "Home",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.explore),
+            label: "Discover",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            label: "Notifications",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: "Profile",
+          ),
+        ],
+      ),
     );
   }
 }
