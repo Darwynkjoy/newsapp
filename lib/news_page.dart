@@ -17,13 +17,17 @@ class NewsPage extends StatefulWidget {
 class _NewsPageState extends State<NewsPage> {
 
 String timeAgo() {
-    final duration = DateTime.now().difference(widget.time);
-    if (duration.inHours >= 1) {
-      return "${duration.inHours} hours ago";
-    } else {
-      return "${duration.inMinutes} minutes ago";
-    }
+  final duration = DateTime.now().difference(widget.time);
+  
+  if (duration.inDays >= 1) {
+    return "${duration.inDays} days ago";
+  } else if (duration.inHours >= 1) {
+    return "${duration.inHours} hours ago";
+  } else {
+    return "${duration.inMinutes} minutes ago";
   }
+}
+
 
 
   @override

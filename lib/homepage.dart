@@ -24,7 +24,7 @@ class _homepageState extends State<Homepage>{
 
   Future<GeneralNewsApi?> getData() async{
     try{
-      String url="https://newsapi.org/v2/everything?q=trending&apiKey=82e09c57322740199b14c3f78f979326";
+      String url="https://newsapi.org/v2/everything?q=trending&from=2025-02-23&to=2025-02-23&apiKey=82e09c57322740199b14c3f78f979326";
       http.Response res=await http.get(Uri.parse(url));
       if(res.statusCode == 200){
         return GeneralNewsApi.fromJson(json.decode(res.body));
@@ -118,13 +118,13 @@ class _homepageState extends State<Homepage>{
                             context,
                             MaterialPageRoute(
                               builder: (context) => NewsPage(
-                                image: article.urlToImage ?? '',
-                                title: article.title ?? "No Title",
-                                description: article.description ?? "No Description",
-                                content: article.content ?? "No Content",
-                                name: article.source.name ?? "",
-                                time: article.publishedAt ?? DateTime.now(),
-                                author: article.author ?? "Unknown",
+                                image: article.urlToImage,
+                                title: article.title,
+                                description: article.description,
+                                content: article.content,
+                                name: article.source.name,
+                                time: article.publishedAt,
+                                author: article.author,
                               ),
                             ),
                           );
@@ -252,7 +252,7 @@ class _homepageState extends State<Homepage>{
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color.fromARGB(255, 234, 245, 255),
+        backgroundColor: const Color.fromARGB(255, 235, 235, 235),
         onPressed: (){
         Navigator.push(context, MaterialPageRoute(builder: (context)=>DiscoverPage()));
       },

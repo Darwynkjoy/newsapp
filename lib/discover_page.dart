@@ -11,7 +11,7 @@ class DiscoverPage extends StatefulWidget{
 class _DiscoverPageState extends State<DiscoverPage>{
 
   List<String> categories = ["General","Sports", "Education", "Business", "Technology"];
-  String selectedCategory = "all"; // Default category
+  String selectedCategory = "General"; // Default category
 
 
   int current = 0;
@@ -28,7 +28,7 @@ class _DiscoverPageState extends State<DiscoverPage>{
 
   Future<GeneralNewsApi?> getData(String selectedCategory) async{
     try{
-      String url="https://newsapi.org/v2/everything?q=$selectedCategory&apiKey=82e09c57322740199b14c3f78f979326";
+      String url="https://newsapi.org/v2/everything?q=$selectedCategory&from02-02-24&apiKey=82e09c57322740199b14c3f78f979326";
       http.Response res=await http.get(Uri.parse(url));
       if(res.statusCode == 200){
         return GeneralNewsApi.fromJson(json.decode(res.body));
