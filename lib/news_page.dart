@@ -93,8 +93,8 @@ String timeAgo() {
                 left: 10,
                 child: Container(
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(52, 0, 0, 0), // Semi-transparent black
-                      shape: BoxShape.circle, // Makes it circular
+                      color: const Color.fromARGB(52, 0, 0, 0),
+                      shape: BoxShape.circle,
                     ),
                     child: IconButton(
                       onPressed: () {
@@ -150,7 +150,15 @@ String timeAgo() {
                   Row(
                     children: [
                       Spacer(),
-                      Text("-${widget.author}",style: TextStyle(fontSize: 15,color: Colors.black,fontWeight: FontWeight.bold),textAlign: TextAlign.justify),
+                      Text(
+                        "- ${widget.author}" ?? "- Unknown Author",
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.justify,
+                      ),
                     ],
                   )
                 ],

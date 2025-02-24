@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:newsapp/data.dart';
+import 'package:newsapp/data_modal.dart';
 import 'package:newsapp/discover_page.dart';
+import 'package:newsapp/hotnews_modal.dart';
 import 'package:newsapp/news_page.dart';
 
 class Homepage extends StatefulWidget{
@@ -10,34 +12,22 @@ class Homepage extends StatefulWidget{
   State<Homepage> createState()=> _homepageState();
 }
 class _homepageState extends State<Homepage>{
-
-  final List<Widget> _pages = [
-    Homepage(),
-    DiscoverPage(),
-  ];
-  int _selectedIndex = 0;
-
-  // Function to update the selected index
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  late Future <Newsappapimodel?> futureData;
+  late Future <GeneralNewsApi?> futureData;
+  late Future <HotNewsApi?> hotNewsData;
   @override
 
   void initState(){
     super.initState();
     futureData= getData();
+    hotNewsData= hotData();
   }
 
-  Future<Newsappapimodel?> getData() async{
+  Future<GeneralNewsApi?> getData() async{
     try{
-      String url="https://newsapi.org/v2/everything?q=apple&from=2025-02-20&to=2025-02-20&sortBy=popularity&apiKey=82e09c57322740199b14c3f78f979326";
+      String url="https://newsapi.org/v2/everything?q=trending&apiKey=82e09c57322740199b14c3f78f979326";
       http.Response res=await http.get(Uri.parse(url));
       if(res.statusCode == 200){
-        return Newsappapimodel.fromJson(json.decode(res.body));
+        return GeneralNewsApi.fromJson(json.decode(res.body));
       }
       else{
         throw Exception("failed to load data");
@@ -48,6 +38,24 @@ class _homepageState extends State<Homepage>{
     }
     return null;
   }
+
+  Future<HotNewsApi?> hotData() async{
+    try{
+      String url="https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=82e09c57322740199b14c3f78f979326";
+      http.Response res=await http.get(Uri.parse(url));
+      if(res.statusCode == 200){
+        return HotNewsApi.fromJson(json.decode(res.body));
+      }
+      else{
+        throw Exception("failed to load data");
+      }
+    }
+    catch (e){
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+
 
   @override
   Widget build(BuildContext context){
@@ -67,7 +75,9 @@ class _homepageState extends State<Homepage>{
             IconButton(
               style: ButtonStyle(
                 backgroundColor: WidgetStatePropertyAll(const Color.fromARGB(255, 241, 241, 241))),
-              onPressed: (){}, icon: Icon(Icons.notifications_outlined)),
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>DiscoverPage()));
+              }, icon: Icon(Icons.notifications_outlined)),
             ]
       ),
       body: Padding(
@@ -78,10 +88,83 @@ class _homepageState extends State<Homepage>{
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Breaking News",style: TextStyle(fontSize: 25,color: Colors.black,fontWeight: FontWeight.bold),),
+                Text("Hot news",style: TextStyle(fontSize: 25,color: Colors.black,fontWeight: FontWeight.bold),),
                 TextButton(onPressed: (){}, child: Text("View all",style: TextStyle(fontSize: 15,color: Colors.blue),)),
               ],
+             ),
+
+            FutureBuilder(
+              future: hotNewsData,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text("Error: ${snapshot.error}"));
+                } else if (snapshot.hasData && snapshot.data != null && snapshot.data!.articles.isNotEmpty) {
+                  final articles = snapshot.data!.articles.take(10).toList(); // ✅ Show only 5 articles
+
+                  return CarouselSlider(
+                    options: CarouselOptions(
+                      height: 250,
+                      autoPlay: true,
+                      enlargeCenterPage: true,
+                      aspectRatio: 16 / 9,
+                      viewportFraction: .82,
+                    ),
+                    items: articles.map((article) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NewsPage(
+                                image: article.urlToImage ?? '',
+                                title: article.title ?? "No Title",
+                                description: article.description ?? "No Description",
+                                content: article.content ?? "No Content",
+                                name: article.source.name ?? "",
+                                time: article.publishedAt ?? DateTime.now(),
+                                author: article.author ?? "Unknown",
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(5),
+                          height: 200,
+                          width: 300,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            image: DecorationImage(
+                                    image: NetworkImage(article.urlToImage),
+                                    fit: BoxFit.cover,
+                                  ),
+                            color: Colors.grey.shade300,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Spacer(),
+                              Row(
+                                children: [
+                                  Text("${article.source.name}"),
+                                  Icon(Icons.verified_rounded,color: Colors.blue,size: 15,)
+                                ],
+                              ),
+                              Text("${article.title}",style: TextStyle(fontSize: 20),),
+                              SizedBox(height: 10,)
+                            ],
+                          )
+                        ),
+                      );
+                    }).toList(),
+                  );
+                } else {
+                  return Center(child: Text("No articles found"));
+                }
+              },
             ),
+            Text("Breaking News",style: TextStyle(fontSize: 25,color: Colors.black,fontWeight: FontWeight.bold),),
             FutureBuilder(
               future: futureData,
             builder: (context,snaphot){
@@ -99,7 +182,7 @@ class _homepageState extends State<Homepage>{
                   final article=articlesData[index];
                   return GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>NewsPage(image: article.urlToImage, title: article.title, description: article.description,content: article.content,name: article.source.name,time: article.publishedAt,author: article.author,)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>NewsPage(image: article.urlToImage!, title: article.title, description: article.description!,content: article.content,name: article.source.name,time: article.publishedAt,author: article.author,)));
                     },
                     child: Container(
                       padding: EdgeInsets.all(10),
@@ -168,32 +251,12 @@ class _homepageState extends State<Homepage>{
           ],
         ),
       ),
-      
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: Colors.blue, // Active icon color
-        unselectedItemColor: Colors.grey, // Inactive icon color
-        type: BottomNavigationBarType.fixed, // Keeps all labels visible
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.explore),
-            label: "Discover",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: "Notifications",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: "Profile",
-          ),
-        ],
-      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color.fromARGB(255, 234, 245, 255),
+        onPressed: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>DiscoverPage()));
+      },
+      child: Icon(Icons.public,size: 35,color: Colors.blue,),),
     );
   }
 }

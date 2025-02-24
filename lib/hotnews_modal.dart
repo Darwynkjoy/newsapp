@@ -1,25 +1,25 @@
 // To parse this JSON data, do
 //
-//     final generalNewsApi = generalNewsApiFromJson(jsonString);
+//     final hotNewsApi = hotNewsApiFromJson(jsonString);
 
 import 'dart:convert';
 
-GeneralNewsApi generalNewsApiFromJson(String str) => GeneralNewsApi.fromJson(json.decode(str));
+HotNewsApi hotNewsApiFromJson(String str) => HotNewsApi.fromJson(json.decode(str));
 
-String generalNewsApiToJson(GeneralNewsApi data) => json.encode(data.toJson());
+String hotNewsApiToJson(HotNewsApi data) => json.encode(data.toJson());
 
-class GeneralNewsApi {
+class HotNewsApi {
     String status;
     int totalResults;
     List<Article> articles;
 
-    GeneralNewsApi({
+    HotNewsApi({
         required this.status,
         required this.totalResults,
         required this.articles,
     });
 
-    factory GeneralNewsApi.fromJson(Map<String, dynamic> json) => GeneralNewsApi(
+    factory HotNewsApi.fromJson(Map<String, dynamic> json) => HotNewsApi(
         status: json["status"],
         totalResults: json["totalResults"],
         articles: List<Article>.from(json["articles"].map((x) => Article.fromJson(x))),
@@ -34,11 +34,11 @@ class GeneralNewsApi {
 
 class Article {
     Source source;
-    String? author;
+    String author;
     String title;
-    String? description;
+    String description;
     String url;
-    String? urlToImage;
+    String urlToImage;
     DateTime publishedAt;
     String content;
 
@@ -77,7 +77,7 @@ class Article {
 }
 
 class Source {
-    String? id;
+    String id;
     String name;
 
     Source({

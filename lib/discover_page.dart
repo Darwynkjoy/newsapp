@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:newsapp/data.dart';
+import 'package:newsapp/data_modal.dart';
 import 'package:newsapp/news_page.dart';
 
 class DiscoverPage extends StatefulWidget{
@@ -10,26 +10,28 @@ class DiscoverPage extends StatefulWidget{
 }
 class _DiscoverPageState extends State<DiscoverPage>{
 
-  List<String> categories = ["All","Sports", "Education", "Business", "Technology"];
+  List<String> categories = ["General","Sports", "Education", "Business", "Technology"];
+  String selectedCategory = "all"; // Default category
+
 
   int current = 0;
   PageController pageController = PageController();
 
 
-  late Future <Newsappapimodel?> futureData;
+  late Future <GeneralNewsApi?> futureData;
   @override
 
   void initState(){
     super.initState();
-    futureData= getData();
+    futureData= getData(selectedCategory);
   }
 
-  Future<Newsappapimodel?> getData() async{
+  Future<GeneralNewsApi?> getData(String selectedCategory) async{
     try{
-      String url="https://newsapi.org/v2/everything?q=apple&from=2025-02-20&to=2025-02-20&sortBy=popularity&apiKey=82e09c57322740199b14c3f78f979326";
+      String url="https://newsapi.org/v2/everything?q=$selectedCategory&apiKey=82e09c57322740199b14c3f78f979326";
       http.Response res=await http.get(Uri.parse(url));
       if(res.statusCode == 200){
-        return Newsappapimodel.fromJson(json.decode(res.body));
+        return GeneralNewsApi.fromJson(json.decode(res.body));
       }
       else{
         throw Exception("failed to load data");
@@ -47,20 +49,21 @@ class _DiscoverPageState extends State<DiscoverPage>{
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: IconButton(
-          style: ButtonStyle(
-            backgroundColor: WidgetStatePropertyAll(const Color.fromARGB(255, 241, 241, 241))),
-          onPressed: (){}, icon: Icon(Icons.arrow_back_ios)),
+          onPressed: (){
+            Navigator.pop(context);
+          }, icon: Icon(Icons.arrow_back_ios)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Discover",style: TextStyle(fontSize: 28,color: Colors.black,fontWeight: FontWeight.bold),),
+            Text("Discover",style: TextStyle(fontSize: 30,color: Colors.black,fontWeight: FontWeight.bold),),
             Text("News form all around the world",style: TextStyle(fontSize: 15,color: Colors.grey),),
+            SizedBox(height: 10,),
             SizedBox(
               width: double.infinity,
-              height: 60,
+              height: 40,
               child: ListView.builder(
                   physics: const BouncingScrollPhysics(),
                   itemCount: categories.length,
@@ -72,6 +75,8 @@ class _DiscoverPageState extends State<DiscoverPage>{
                           onTap: () {
                             setState(() {
                               current = index;
+                              selectedCategory = categories[current].toLowerCase();
+                              futureData = getData(selectedCategory);
                             });
                             pageController.animateToPage(
                               current,
@@ -83,7 +88,7 @@ class _DiscoverPageState extends State<DiscoverPage>{
                             duration: const Duration(milliseconds: 300),
                             margin: const EdgeInsets.all(5),
                             width: 100,
-                            height: 40,
+                            height: 30,
                             decoration: BoxDecoration(
                               color: current == index
                                   ? Colors.blue
@@ -115,9 +120,9 @@ class _DiscoverPageState extends State<DiscoverPage>{
                   }),
             ),
             Container(
-              margin: const EdgeInsets.only(top: 30),
+              margin: const EdgeInsets.only(top: 10),
               width: double.infinity,
-              height: 550,
+              height: 580,
               child: PageView.builder(
                 itemCount: categories.length,
                 controller: pageController,
@@ -143,7 +148,7 @@ class _DiscoverPageState extends State<DiscoverPage>{
                                   final article=articlesData[index];
                                   return GestureDetector(
                                     onTap: () {
-                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>NewsPage(image: article.urlToImage, title: article.title, description: article.description,content: article.content,name: article.source.name,time: article.publishedAt,author: article.author,)));
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>NewsPage(image: article.urlToImage!, title: article.title, description: article.description!,content: article.content,name: article.source.name,time: article.publishedAt,author: article.author,)));
                                     },
                                     child: Container(
                                       padding: EdgeInsets.all(10),

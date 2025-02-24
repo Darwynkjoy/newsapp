@@ -6,18 +6,30 @@ import 'dart:convert';
 
 Newsappapimodel newsappapimodelFromJson(String str) => Newsappapimodel.fromJson(json.decode(str));
 
+String newsappapimodelToJson(Newsappapimodel data) => json.encode(data.toJson());
 
 class Newsappapimodel {
+    String status;
+    int totalResults;
     List<Article> articles;
 
     Newsappapimodel({
+        required this.status,
+        required this.totalResults,
         required this.articles,
     });
 
     factory Newsappapimodel.fromJson(Map<String, dynamic> json) => Newsappapimodel(
+        status: json["status"],
+        totalResults: json["totalResults"],
         articles: List<Article>.from(json["articles"].map((x) => Article.fromJson(x))),
     );
 
+    Map<String, dynamic> toJson() => {
+        "status": status,
+        "totalResults": totalResults,
+        "articles": List<dynamic>.from(articles.map((x) => x.toJson())),
+    };
 }
 
 class Article {
@@ -26,7 +38,7 @@ class Article {
     String title;
     String description;
     String url;
-    dynamic urlToImage;
+    String urlToImage;
     DateTime publishedAt;
     String content;
 
@@ -52,6 +64,16 @@ class Article {
         content: json["content"],
     );
 
+    Map<String, dynamic> toJson() => {
+        "source": source.toJson(),
+        "author": author,
+        "title": title,
+        "description": description,
+        "url": url,
+        "urlToImage": urlToImage,
+        "publishedAt": publishedAt.toIso8601String(),
+        "content": content,
+    };
 }
 
 class Source {
@@ -68,4 +90,8 @@ class Source {
         name: json["name"],
     );
 
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+    };
 }
