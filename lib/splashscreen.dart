@@ -19,8 +19,27 @@ class Splashscreen extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((_) => pusher(context));
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(
-        child: Lottie.asset("assets/images/news.json",width: 150,height: 150,fit: BoxFit.cover),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(child: Lottie.asset("assets/images/news.json",width: 150,height: 150,fit: BoxFit.cover)),
+          RichText(
+  text: TextSpan(
+    text: "Read",
+    style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500, color: Colors.black),
+    children: <TextSpan>[
+      TextSpan(
+        text: "I",
+        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.blue),
+      ),
+      TextSpan(
+        text: "t",
+        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),
+      )
+    ],
+  ),
+),
+        ],
       ),
     );
   }

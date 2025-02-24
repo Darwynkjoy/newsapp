@@ -14,6 +14,19 @@ class Homepage extends StatefulWidget{
 class _homepageState extends State<Homepage>{
   late Future <GeneralNewsApi?> futureData;
   late Future <HotNewsApi?> hotNewsData;
+  List<String> newsImage = [
+  "assets/images/1.jpg",
+  "assets/images/2.jpeg",
+  "assets/images/3.jpeg",
+  "assets/images/4.jpeg",
+  "assets/images/5.jpeg",
+  "assets/images/6.jpeg",
+  "assets/images/7.jpeg",
+  "assets/images/8.jpeg",
+  "assets/images/9.jpg",
+  "assets/images/10.jpg",
+];
+
   @override
 
   void initState(){
@@ -101,64 +114,71 @@ class _homepageState extends State<Homepage>{
                 } else if (snapshot.hasError) {
                   return Center(child: Text("Error: ${snapshot.error}"));
                 } else if (snapshot.hasData && snapshot.data != null && snapshot.data!.articles.isNotEmpty) {
-                  final articles = snapshot.data!.articles.take(10).toList(); // ✅ Show only 5 articles
+                  final articles = snapshot.data!.articles.take(10).toList(); 
 
                   return CarouselSlider(
-                    options: CarouselOptions(
-                      height: 250,
-                      autoPlay: true,
-                      enlargeCenterPage: true,
-                      aspectRatio: 16 / 9,
-                      viewportFraction: .82,
-                    ),
-                    items: articles.map((article) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => NewsPage(
-                                image: article.urlToImage,
-                                title: article.title,
-                                description: article.description,
-                                content: article.content,
-                                name: article.source.name,
-                                time: article.publishedAt,
-                                author: article.author,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(5),
-                          height: 200,
-                          width: 300,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            image: DecorationImage(
-                                    image: NetworkImage(article.urlToImage),
-                                    fit: BoxFit.cover,
-                                  ),
-                            color: Colors.grey.shade300,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Spacer(),
-                              Row(
-                                children: [
-                                  Text("${article.source.name}"),
-                                  Icon(Icons.verified_rounded,color: Colors.blue,size: 15,)
-                                ],
-                              ),
-                              Text("${article.title}",style: TextStyle(fontSize: 20),),
-                              SizedBox(height: 10,)
-                            ],
-                          )
-                        ),
-                      );
-                    }).toList(),
-                  );
+  options: CarouselOptions(
+    height: 250,
+    autoPlay: true,
+    enlargeCenterPage: true,
+    aspectRatio: 16 / 9,
+    viewportFraction: .82,
+  ),
+  items: articles.asMap().entries.map((entry) {
+    int index = entry.key; //  Get index
+    var article = entry.value; // Get article
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NewsPage(
+              image: article.urlToImage,
+              title: article.title,
+              description: article.description,
+              content: article.content,
+              name: article.source.name,
+              time: article.publishedAt,
+              author: article.author,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.all(5),
+        height: 200,
+        width: 300,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          image: DecorationImage(
+            image: AssetImage(newsImage[index % newsImage.length]), 
+            fit: BoxFit.cover,
+          ),
+          color: Colors.grey.shade300,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Spacer(),
+            Row(
+              children: [
+                Text("${article.source.name}",style: TextStyle(color: Colors.white,backgroundColor: Colors.black26),),
+                Icon(Icons.verified_rounded, color: Colors.blue, size: 15),
+              ],
+            ),
+            Text(
+              "${article.title}",
+              style: TextStyle(fontSize: 20,color: Colors.white,backgroundColor: Colors.black26),
+            ),
+            SizedBox(height: 10),
+          ],
+        ),
+      ),
+    );
+  }).toList(), // Convert map() back to a List
+);
+
                 } else {
                   return Center(child: Text("No articles found"));
                 }

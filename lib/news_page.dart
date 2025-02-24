@@ -70,7 +70,7 @@ String timeAgo() {
                               fontSize: 25,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
-                              backgroundColor: const Color.fromARGB(56, 0, 0, 0),
+                              backgroundColor: Colors.black26
                             ),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
@@ -81,7 +81,7 @@ String timeAgo() {
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
-                              backgroundColor: const Color.fromARGB(56, 0, 0, 0),
+                              backgroundColor: Colors.black26
                             ),
                           ),
                           SizedBox(height: 30),
