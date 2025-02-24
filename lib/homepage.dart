@@ -88,7 +88,7 @@ class _homepageState extends State<Homepage>{
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Hot news",style: TextStyle(fontSize: 25,color: Colors.black,fontWeight: FontWeight.bold),),
+                Text("Breaking news",style: TextStyle(fontSize: 25,color: Colors.black,fontWeight: FontWeight.bold),),
                 TextButton(onPressed: (){}, child: Text("View all",style: TextStyle(fontSize: 15,color: Colors.blue),)),
               ],
              ),
@@ -164,7 +164,7 @@ class _homepageState extends State<Homepage>{
                 }
               },
             ),
-            Text("Breaking News",style: TextStyle(fontSize: 25,color: Colors.black,fontWeight: FontWeight.bold),),
+            Text("Hot News",style: TextStyle(fontSize: 25,color: Colors.black,fontWeight: FontWeight.bold),),
             FutureBuilder(
               future: futureData,
             builder: (context,snaphot){

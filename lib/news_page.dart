@@ -148,8 +148,8 @@ String timeAgo() {
                     ],
                   ),
                   SizedBox(height: 20,),
+                  Text('''${widget.description}''',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.justify,),
                   Text('''${widget.content}''',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.justify),
-                  Text('''${widget.description}''',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.justify,maxLines: 10,),
                   Spacer(),
                   Row(
                     children: [
