@@ -76,21 +76,35 @@ class _homepageState extends State<Homepage>{
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: IconButton(
-          style: ButtonStyle(
-            backgroundColor: WidgetStatePropertyAll(const Color.fromARGB(255, 241, 241, 241))),
-          onPressed: (){}, icon: Icon(Icons.menu)),
+        title: RichText(
+          text: TextSpan(
+            text: "Read",
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500, color: Colors.black),
+            children: <TextSpan>[
+              TextSpan(
+                text: "I",
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.blue),
+              ),
+              TextSpan(
+                text: "t",
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),
+              )
+            ],
+          ),
+        ),
           actions: [
             IconButton(
               style: ButtonStyle(
                 backgroundColor: WidgetStatePropertyAll(const Color.fromARGB(255, 241, 241, 241))),
               onPressed: (){}, icon: Icon(Icons.search)),
+              SizedBox(width: 10,),
             IconButton(
               style: ButtonStyle(
                 backgroundColor: WidgetStatePropertyAll(const Color.fromARGB(255, 241, 241, 241))),
               onPressed: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context)=>DiscoverPage()));
               }, icon: Icon(Icons.notifications_outlined)),
+              SizedBox(width: 10,),
             ]
       ),
       body: Padding(
@@ -233,7 +247,6 @@ class _homepageState extends State<Homepage>{
                           Container(
                             width: 237,
                             height: 100,
-                            color: Colors.white,
                             child: Column(
                               children: [
                                 Text("${article.title}",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.black,overflow: TextOverflow.ellipsis),maxLines: 2,),
