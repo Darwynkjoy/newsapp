@@ -92,34 +92,14 @@ class _homepageState extends State<Homepage>{
             ],
           ),
         ),
-          actions: [
-            IconButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll(const Color.fromARGB(255, 241, 241, 241))),
-              onPressed: (){}, icon: Icon(Icons.search)),
-              SizedBox(width: 10,),
-            IconButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll(const Color.fromARGB(255, 241, 241, 241))),
-              onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>DiscoverPage()));
-              }, icon: Icon(Icons.notifications_outlined)),
-              SizedBox(width: 10,),
-            ]
+        centerTitle: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Breaking news",style: TextStyle(fontSize: 25,color: Colors.black,fontWeight: FontWeight.bold),),
-                TextButton(onPressed: (){}, child: Text("View all",style: TextStyle(fontSize: 15,color: Colors.blue),)),
-              ],
-             ),
-
+            Text("Breaking news",style: TextStyle(fontSize: 25,color: Colors.black,fontWeight: FontWeight.bold),),
             FutureBuilder(
               future: hotNewsData,
               builder: (context, snapshot) {
@@ -148,7 +128,7 @@ class _homepageState extends State<Homepage>{
           context,
           MaterialPageRoute(
             builder: (context) => NewsPage(
-              image: article.urlToImage,
+              image: newsImage[index],
               title: article.title,
               description: article.description,
               content: article.content,

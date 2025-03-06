@@ -155,13 +155,15 @@ String timeAgo() {
                     children: [
                       Spacer(),
                       Text(
-                        "- ${widget.author}" ?? "- Unknown Author",
+                        "- ${widget.author != null && widget.author.isNotEmpty ? widget.author : "Unknown Author"}",
                         style: TextStyle(
                           fontSize: 15,
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.justify,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
                     ],
                   )
